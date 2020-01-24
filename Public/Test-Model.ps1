@@ -93,6 +93,6 @@ function Test-Model {
     # Query model
   	$GetModelID = Get-ModelID -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Model $Model
     # Return outcome
-    return (Test-RiskProBatchOutcome -Log $GetModelID)
+    return (Test-RiskProBatchClientOutcome -Log $GetModelID)
   }
 }

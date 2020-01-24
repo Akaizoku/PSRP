@@ -186,6 +186,6 @@ function Test-Solve {
     # Query solve
   	$GetSolveID = Get-SolveID -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Solve $Solve -Kind $Kind -Synchronous:$Synchronous
     # Return outcome
-    return (Test-RiskProBatchOutcome -Log $GetSolveID)
+    return (Test-RiskProBatchClientOutcome -Log $GetSolveID)
   }
 }

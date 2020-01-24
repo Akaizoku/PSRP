@@ -10,10 +10,10 @@ function Get-RiskProBatchResult {
     The log parameter corresponds to the RiskPro batch client output to analyse.
 
     .INPUTS
-    System.String. You can pipe the RiskPro batch client log to Test-RiskProBatchOutcome.
+    System.String. You can pipe the RiskPro batch client log to Test-RiskProBatchClientOutcome.
 
     .OUTPUTS
-    System.String. Test-RiskProBatchOutcome returns the result of the RiskPro batch client command.
+    System.String. Test-RiskProBatchClientOutcome returns the result of the RiskPro batch client command.
 
     .NOTES
     File name:      Get-RiskProBatchResult.ps1

@@ -27,14 +27,12 @@ function Invoke-CreateModelGroup {
     .PARAMETER Models
     The optional models parameter corresponds to the list of models to add to the model group.
 
-    .PARAMETER Synchronous
-    The synchonous switch defines if the operation should be run in synchronous mode.
-
     .NOTES
     File name:      Invoke-CreateModelGroup.ps1
     Author:         Florian CARRIER
     Creation date:  22/10/2019
-    Last modified:  22/01/2020
+    Last modified:  23/01/2020
+    WARNING         Synchronous mode not supported for operation 'createModelGroup'!
   #>
   [CmdletBinding ()]
   Param(
@@ -95,30 +93,21 @@ function Invoke-CreateModelGroup {
     )]
     [ValidateNotNullOrEmpty ()]
     [String[]]
-    $Models,
-    [Parameter (
-      HelpMessage = "Define if the synchronous mode should be enabled"
-    )]
-    [Switch]
-    $Synchronous
+    $Models
   )
   Begin {
     # Get global preference variables
     Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     # Get administration Java class
-    $JavaClass = Get-JavaClass -ModelGroup "Administration"
+    $JavaClass = Get-JavaClass -Name "Administration"
     # Format models list
     # TODO semicolon separated list of models
   }
   Process {
     # Define operation parameters
     $OperationParameters = New-Object -TypeName "System.Collections.Specialized.OrderedDictionary"
-    $OperationParameters.Add("ad.modelModelGroup", $ModelGroup)
-    if ($PSBoundParameters.ContainsKey("Models")) {
-      $OperationParameters.Add("ad.models", $Models)
-    }
-    # Configure synchronous mode
-    $OperationParameters.Add("ws.sync", $Synchronous)
+    $OperationParameters.Add("ad.modelGroupName", $ModelGroup)
+    if ($PSBoundParameters.ContainsKey("Models")) { $OperationParameters.Add("ad.models", $Models) }
     # Format Java parameters
     $Parameters = ConvertTo-JavaProperty -Properties $OperationParameters
     # Invoke RiskPro batch client
