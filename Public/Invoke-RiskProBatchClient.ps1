@@ -127,6 +127,7 @@ function Invoke-RiskProBatchClient {
     }
     # Execute command
 	  $Output = Invoke-Expression -Command $CommandLine | Out-String
+    Write-Log -Type "DEBUG" -Object $Output
     # Return RiskPro batch client output
     return $Output
   }
