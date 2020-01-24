@@ -21,18 +21,15 @@ function Invoke-DeleteModel {
     .PARAMETER JavaOptions
     The optional Java options parameter corresponds to the additional Java options to pass to the Java client.
 
-    .PARAMETER Name
-    The name parameter corresponds to the name of the model to delete.
-
-    .PARAMETER Synchronous
-    The synchonous switch defines if the operation should be run in synchronous mode.
+    .PARAMETER ModelName
+    The model name parameter corresponds to the name of the model to delete.
 
     .NOTES
     File name:      Invoke-DeleteModel.ps1
     Author:         Florian CARRIER
     Creation date:  23/10/2019
-    Last modified:  21/01/2020
-    TODO            Add parameter validation
+    Last modified:  23/01/2020
+    WARNING         Synchronous mode not supported for operation 'deleteModel'!
   #>
   [CmdletBinding (
     SupportsShouldProcess = $true
@@ -87,17 +84,12 @@ function Invoke-DeleteModel {
     [ValidateNotNullOrEmpty ()]
     [Alias ("Name")]
     [String]
-    $Model,
+    $ModelName,
     [Parameter (
       HelpMessage = "Define if the SQL script should be saved in the log directory"
     )]
     [Switch]
-    $GenerateScript,
-    [Parameter (
-      HelpMessage = "Define if the synchronous mode should be enabled"
-    )]
-    [Switch]
-    $SynchronousMode
+    $GenerateScript
   )
   Begin {
     # Get global preference variables
@@ -108,10 +100,8 @@ function Invoke-DeleteModel {
   Process {
     # Define parameters
     $OperationParameters = New-Object -TypeName "System.Collections.Specialized.OrderedDictionary"
-    $OperationParameters.Add("ad.modelName"     , $Model)
+    $OperationParameters.Add("ad.modelName"     , $ModelName)
     $OperationParameters.Add("ad.generateScript", $GenerateScript)
-    # Configure synchronous mode
-    $OperationParameters.Add("ws.sync"          , $SynchronousMode)
     # Format Java parameters
     $Parameters = ConvertTo-JavaProperty -Properties $OperationParameters
     # Delete model

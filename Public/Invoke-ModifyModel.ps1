@@ -170,6 +170,5 @@ function Invoke-ModifyModel {
     $Parameters = ConvertTo-JavaProperty -Properties $OperationParameters
     # Invoke RiskPro batch client
   	Invoke-RiskProBatchClient -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Operation "modifyModel" -Parameters $Parameters -Class $JavaClass
-    }
   }
 }

@@ -1,7 +1,7 @@
 function Invoke-CreateModel {
   <#
     .SYNOPSIS
-    Create a model
+    Create model
 
     .DESCRIPTION
     Wrapper function to create a new model using the RiskPro batch client
@@ -21,18 +21,14 @@ function Invoke-CreateModel {
     .PARAMETER JavaOptions
     The optional Java options parameter corresponds to the additional Java options to pass to the Java client.
 
-    .PARAMETER Model
-    The model parameter corresponds to the name of the model to create.
-
-    .PARAMETER Synchronous
-    The synchonous switch defines if the operation should be run in synchronous mode.
+    .PARAMETER ModelName
+    The model name parameter corresponds to the name of the model to create.
 
     .NOTES
     File name:      Invoke-CreateModel.ps1
     Author:         Florian CARRIER
     Creation date:  22/10/2019
-    Last modified:  22/01/2020
-    TODO            Add parameter validation
+    Last modified:  23/01/2020
     WARNING         Synchronous mode not supported for operation 'createModel'!
   #>
   [CmdletBinding (
@@ -88,7 +84,7 @@ function Invoke-CreateModel {
     [ValidateNotNullOrEmpty ()]
     [Alias ("Name")]
     [String]
-    $Model,
+    $ModelName,
     [Parameter (
       Position    = 7,
       Mandatory   = $true,
@@ -157,7 +153,7 @@ function Invoke-CreateModel {
     )]
     [ValidateNotNullOrEmpty ()]
     [String]
-    $ModelGroup,
+    $ModelGroupName,
     [Parameter (
       Position    = 15,
       Mandatory   = $false,
@@ -181,12 +177,7 @@ function Invoke-CreateModel {
     )]
     [ValidateNotNullOrEmpty ()]
     [String]
-    $HistorisationModel,
-    [Parameter (
-      HelpMessage = "Define if the synchronous mode should be enabled"
-    )]
-    [Switch]
-    $SynchronousMode = $true
+    $HistorisationModel
   )
   Begin {
     # Get global preference variables
@@ -202,19 +193,17 @@ function Invoke-CreateModel {
   Process {
     # Define operation parameters
     $OperationParameters = New-Object -TypeName "System.Collections.Specialized.OrderedDictionary"
-    $OperationParameters.Add("ad.name", $Model)
+    $OperationParameters.Add("ad.name", $ModelName)
     $OperationParameters.Add("ad.modelType", $ModelType)
     $OperationParameters.Add("ad.description", $Description)
     $OperationParameters.Add("ad.baseCurrency", $Currency)
-    $OperationParameters.Add("ad.fiscalYearStart", $FiscalYearStart)
-    $OperationParameters.Add("ad.businessYearStart", $BusinessYearStart)
+    if ($PSBoundParameters.ContainsKey("FiscalYearStart"))    { $OperationParameters.Add("ad.fiscalYearStart", $FiscalYearStart)            }
+    if ($PSBoundParameters.ContainsKey("BusinessYearStart"))  { $OperationParameters.Add("ad.businessYearStart", $BusinessYearStart)        }
     if ($PSBoundParameters.ContainsKey("ReferenceModel"))     { $OperationParameters.Add("ad.referenceModelName", $ReferenceModel)          }
     if ($PSBoundParameters.ContainsKey("Owner"))              { $OperationParameters.Add("ad.owner", $Owner)                                }
-    if ($PSBoundParameters.ContainsKey("ModelGroup"))         { $OperationParameters.Add("ad.modelGroupName", $ModelGroup)                  }
+    if ($PSBoundParameters.ContainsKey("ModelGroupName"))     { $OperationParameters.Add("ad.modelGroupName", $ModelGroupName)              }
     if ($PSBoundParameters.ContainsKey("Template"))           { $OperationParameters.Add("ad.factoryType", $Template)                       }
     if ($PSBoundParameters.ContainsKey("HistorisationModel")) { $OperationParameters.Add("ad.historizationModelName", $HistorisationModel)  }
-    # Configure syncrhonous mode
-    $OperationParameters.Add("ws.sync", $SynchronousMode)
     # Format Java parameters
     $Parameters = ConvertTo-JavaProperty -Properties $OperationParameters
     # Create model
