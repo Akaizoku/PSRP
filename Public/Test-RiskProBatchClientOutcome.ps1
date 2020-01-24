@@ -1,4 +1,4 @@
-function Test-RiskProBatchOutcome {
+function Test-RiskProBatchClientOutcome {
   <#
     .SYNOPSIS
     Check RiskPro batch client command outcome
@@ -10,18 +10,18 @@ function Test-RiskProBatchOutcome {
     The log parameter corresponds to the RiskPro batch client output to analyse.
 
     .INPUTS
-    System.String. You can pipe the RiskPro batch client log to Test-RiskProBatchOutcome.
+    System.String. You can pipe the RiskPro batch client log to Test-RiskProBatchClientOutcome.
 
     .OUTPUTS
-    System.Boolean. Test-RiskProBatchOutcome returns a boolean value:
+    System.Boolean. Test-RiskProBatchClientOutcome returns a boolean value:
     - false:  errors were detected in the command log;
     - true:   no errors were detected in the command log.
 
     .NOTES
-    Filename:       Test-RiskProBatchOutcome.ps1
+    Filename:       Test-RiskProBatchClientOutcome.ps1
     Author:         Florian CARRIER
     Creation date:  23/10/2019
-    Last modified:  21/01/2020
+    Last modified:  23/01/2020
     TODO            Improve parsing
   #>
   [CmdletBinding (
@@ -44,7 +44,7 @@ function Test-RiskProBatchOutcome {
     Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
   }
   Process {
-    # Check RiskPro batch command log
+    # Check RiskPro batch client command log
     if ((Select-String -InputObject $Log -Pattern "Error" -Encoding "UTF8" -SimpleMatch -Quiet) -Or (Select-String -InputObject $Log -Pattern "Exception" -Encoding "UTF8" -SimpleMatch -Quiet)) {
       # If exception is found return failure
       return $false
