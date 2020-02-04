@@ -21,14 +21,14 @@ function Get-ModelID {
     .PARAMETER JavaOptions
     The optional Java options parameter corresponds to the additional Java options to pass to the Java client.
 
-    .PARAMETER Model
-    The model parameter corresponds to the name of the model to check.
+    .PARAMETER ModelName
+    The model name parameter corresponds to the name of the model to check.
 
     .NOTES
     File name:      Get-ModelID.ps1
     Author:         Florian CARRIER
     Creation date:  23/10/2019
-    Last modified:  21/01/2020
+    Last modified:  28/01/2020
     TODO            Add parameter validation
                     Parse output and retrieve model ID
     WARNING         Synchronous mode not supported for operation 'getModelId'!
@@ -86,7 +86,7 @@ function Get-ModelID {
     [ValidateNotNullOrEmpty ()]
     [Alias ("Name")]
     [String]
-    $Model
+    $ModelName
   )
   Begin {
     # Get global preference variables
@@ -97,7 +97,7 @@ function Get-ModelID {
   Process {
     # Define operation parameters
     $OperationParameters = New-Object -TypeName "System.Collections.Specialized.OrderedDictionary"
-    $OperationParameters.Add("ut.modelName", $Model)
+    $OperationParameters.Add("ut.modelName", $ModelName)
     # Format Java parameters
     $Parameters = ConvertTo-JavaProperty -Properties $OperationParameters
     # Query model ID

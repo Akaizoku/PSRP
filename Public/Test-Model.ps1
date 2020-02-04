@@ -28,7 +28,7 @@ function Test-Model {
     File name:      Test-Model.ps1
     Author:         Florian CARRIER
     Creation date:  23/10/2019
-    Last modified:  22/01/2020
+    Last modified:  28/01/2020
   #>
   [CmdletBinding (
     SupportsShouldProcess = $true
@@ -83,7 +83,7 @@ function Test-Model {
     [ValidateNotNullOrEmpty ()]
     [Alias ("Name")]
     [String]
-    $Model
+    $ModelName
   )
   Begin {
     # Get global preference variables
@@ -91,7 +91,7 @@ function Test-Model {
   }
   Process {
     # Query model
-  	$GetModelID = Get-ModelID -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Model $Model
+  	$GetModelID = Get-ModelID -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -ModelName $ModelName
     # Return outcome
     return (Test-RiskProBatchClientOutcome -Log $GetModelID)
   }
