@@ -1,4 +1,4 @@
-function Write-RiskProBatchCmd {
+function Write-RiskProBatchClientCmd {
   <#
     .SYNOPSIS
     Write RiskPro batch client command
@@ -25,16 +25,16 @@ function Write-RiskProBatchCmd {
     The operation parameter corresponds to the command to execute.
 
     .PARAMETER Parameters
-    The parameters parameter corresponds to the list of parameters to use for the operation.
+    The optional parameters parameter corresponds to the list of parameters to use for the operation.
 
     .PARAMETER Class
     The class parameter corresponds to the Java class to use for the operation.
 
     .NOTES
-    File name:      Write-RiskProBatchCmd.ps1
+    File name:      Write-RiskProBatchClientCmd.ps1
     Author:         Florian CARRIER
     Creation date:  27/11/2018
-    Last modified:  21/01/2020
+    Last modified:  24/01/2020
   #>
   [CmdletBinding()]
   Param (
@@ -89,7 +89,7 @@ function Write-RiskProBatchCmd {
     $Operation,
     [Parameter (
       Position    = 7,
-      Mandatory   = $true,
+      Mandatory   = $false,
       HelpMessage = "Parameters of the operation"
     )]
     [ValidateNotNullOrEmpty ()]
@@ -120,7 +120,19 @@ function Write-RiskProBatchCmd {
     # Format Java parameters
     $BaseParameters = ConvertTo-JavaProperty -Properties $CommandParameters
     # Construct command
-    $Command = "& ""$JavaPath"" -classpath ""$RiskProBatchClient"" $BaseParameters $Parameters $JavaOptions $Class"
+    if ($PSBoundParameters.ContainsKey("JavaOptions")) {
+      if ($PSBoundParameters.ContainsKey("Parameters")) {
+        $Command = "& ""$JavaPath"" -classpath ""$RiskProBatchClient"" $BaseParameters $Parameters $JavaOptions $Class"
+      } else {
+        $Command = "& ""$JavaPath"" -classpath ""$RiskProBatchClient"" $BaseParameters $JavaOptions $Class"
+      }
+    } else {
+      if ($PSBoundParameters.ContainsKey("Parameters")) {
+        $Command = "& ""$JavaPath"" -classpath ""$RiskProBatchClient"" $BaseParameters $Parameters $Class"
+      } else {
+        $Command = "& ""$JavaPath"" -classpath ""$RiskProBatchClient"" $BaseParameters $Class"
+      }
+    }
     # Debugging with obfuscation
     Write-Log -Type "DEBUG" -Object $Command -Obfuscate $Credentials.GetNetworkCredential().Password
     # Return RiskPro batch client command
