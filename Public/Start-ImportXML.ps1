@@ -1,35 +1,147 @@
 function Start-ImportXML {
-  # TODO
+  <#
+    .SYNOPSIS
+    Import XML file
+
+    .DESCRIPTION
+    Wrapper function to import data using the RiskPro batch client
+
+    .PARAMETER JavaPath
+    The optional java path parameter corresponds to the path to the Java executable file. If not specified, please ensure that the path contains the Java home.
+
+    .PARAMETER RiskProBatchClient
+    The RiskPro batch client parameter corresponds to the path to the RiskPro batch client JAR file.
+
+    .PARAMETER ServerURI
+    The server URI parameter corresponds to the Uniform Resource Identifier (URI) of the RiskPro server.
+
+    .PARAMETER Credentials
+    The credentials parameter corresponds to the credentials of the RiskPro account to use for the operation.
+
+    .PARAMETER JavaOptions
+    The optional Java options parameter corresponds to the additional Java options to pass to the Java client.
+
+    .PARAMETER ModelName
+    The model name parameter corresponds to the name of the model in which to import data.
+
+    .PARAMETER SolveName
+    The SOLVE name parameter corresponds to the name of the solve to create.
+
+    .PARAMETER FileName
+    The file name parameter corresponds to the path to the file to import.
+
+    .PARAMETER ModelElements
+    The model elements parameter corresponds to the import configuration for model elements.
+
+    .PARAMETER Observations
+    The observations parameter corresponds to the import configuration for observations.
+
+    .PARAMETER Contracts
+    The contracts parameter corresponds to the import configuration for contracts.
+
+    .PARAMETER Counterparties
+    The counterparties parameter corresponds to the import configuration for counterparties.
+
+    .PARAMETER BusinessAudits
+    The business audits parameter corresponds to the import configuration for business audits.
+
+    .PARAMETER Libraries
+    The libraries parameter corresponds to the import configuration for Java libraries.
+
+    .PARAMETER LogLevel
+    The log level parameter corresponds to the level of logging desired.
+
+    .PARAMETER ForcedDataGroupName
+    The forced data group name corresponds to the name of the data group in which the data should be imported.
+
+    .PARAMETER NewModel
+    The new model switch specifies if a new model should be created.
+
+    .PARAMETER CompileAllExpressions
+    The compile all expressions switch specifies if all expressions should be compiled.
+
+    .PARAMETER SynchronousMode
+    The synchronous mode switch specifies if the synchronous mode should be enabled.
+
+    .NOTES
+    File name:      Start-ImportXML.ps1
+    Author:         Florian CARRIER
+    Creation date:  15/10/2019
+    Last modified:  17/02/2020
+    TODO            Add unmanaged objects parameters
+
+  #>
   [CmdletBinding (
     SupportsShouldProcess = $true
   )]
   Param(
     [Parameter (
       Position    = 1,
+      Mandatory   = $false,
+      HelpMessage = "Java path"
+    )]
+    [ValidateNotNullOrEmpty ()]
+    [System.String]
+    $JavaPath,
+    [Parameter (
+      Position    = 2,
+      Mandatory   = $true,
+      HelpMessage = "RiskPro batch client path"
+    )]
+    [ValidateNotNullOrEmpty ()]
+    [Alias ("Path", "RiskProPath")]
+    [System.String]
+    $RiskProBatchClient,
+    [Parameter (
+      Position    = 3,
+      Mandatory   = $true,
+      HelpMessage = "RiskPro server URI"
+    )]
+    [ValidateNotNullOrEmpty ()]
+    [System.String]
+    $ServerURI,
+    [Parameter (
+      Position    = 4,
+      Mandatory   = $true,
+      HelpMessage = "Credentials of the user"
+    )]
+    [ValidateNotNullOrEmpty ()]
+    [System.Management.Automation.PSCredential]
+    $Credentials,
+    [Parameter (
+      Position    = 5,
+      Mandatory   = $false,
+      HelpMessage = "Java options"
+    )]
+    [ValidateNotNullOrEmpty ()]
+    [System.String[]]
+    $JavaOptions,
+    [Parameter (
+      Position    = 6,
       Mandatory   = $true,
       HelpMessage = "Name of the model to import"
     )]
     [ValidateNotNullOrEmpty ()]
     [String]
-    $Model,
+    $ModelName,
     [Parameter (
-      Position    = 2,
+      Position    = 7,
       Mandatory   = $true,
-      HelpMessage = "Name of the process"
+      HelpMessage = "Name of the solve"
     )]
     [ValidateNotNullOrEmpty ()]
     [String]
-    $Solve,
+    $SolveName,
     [Parameter (
-      Position    = 2,
+      Position    = 8,
       Mandatory   = $true,
       HelpMessage = "Path to the file to import"
     )]
     [ValidateNotNullOrEmpty ()]
     [String]
-    $File,
+    $FileName,
     [Parameter (
-      Position    = 3,
+      Position    = 9,
       Mandatory   = $false,
       HelpMessage = "Action to perform for model elements"
     )]
@@ -37,7 +149,7 @@ function Start-ImportXML {
     [String]
     $ModelElements = "NONE",
     [Parameter (
-      Position    = 4,
+      Position    = 10,
       Mandatory   = $false,
       HelpMessage = "Action to perform for observations"
     )]
@@ -45,7 +157,7 @@ function Start-ImportXML {
     [String]
     $Observations = "NONE",
     [Parameter (
-      Position    = 5,
+      Position    = 11,
       Mandatory   = $false,
       HelpMessage = "Action to perform for contracts"
     )]
@@ -53,7 +165,7 @@ function Start-ImportXML {
     [String]
     $Contracts = "NONE",
     [Parameter (
-      Position    = 6,
+      Position    = 12,
       Mandatory   = $false,
       HelpMessage = "Action to perform for conterparties"
     )]
@@ -61,7 +173,7 @@ function Start-ImportXML {
     [String]
     $Counterparties = "NONE",
     [Parameter (
-      Position    = 7,
+      Position    = 13,
       Mandatory   = $false,
       HelpMessage = "Action to perform for business audits"
     )]
@@ -69,7 +181,7 @@ function Start-ImportXML {
     [String]
     $BusinessAudits = "NONE",
     [Parameter (
-      Position    = 8,
+      Position    = 14,
       Mandatory   = $false,
       HelpMessage = "Action to perform for libraries"
     )]
@@ -77,7 +189,7 @@ function Start-ImportXML {
     [String]
     $Libraries = "NONE",
     [Parameter (
-      Position    = 9,
+      Position    = 15,
       Mandatory   = $false,
       HelpMessage = "Define level of detail for logs"
     )]
@@ -85,13 +197,13 @@ function Start-ImportXML {
     [String]
     $LogLevel = "INFO",
     [Parameter (
-      Position    = 10,
+      Position    = 16,
       Mandatory   = $false,
-      HelpMessage = "Define level of detail for logs"
+      HelpMessage = "Name of the target data group"
     )]
     [ValidateNotNullOrEmpty ()]
     [String]
-    $ForcedDataGroup,
+    $ForcedDataGroupName,
     [Parameter (
       HelpMessage = "Define if a new model should be created"
     )]
@@ -101,51 +213,42 @@ function Start-ImportXML {
       HelpMessage = "Define if all expressions should be compiled"
     )]
     [Switch]
-    $CompileExpressions,
+    $CompileAllExpressions,
     [Parameter (
       HelpMessage = "Define if the synchronous mode should be enabled"
     )]
     [Switch]
-    $SyncMode = $true
+    $SynchronousMode
   )
   Begin {
     # Get global preference variables
     Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     # Get Java class
-    $JavaClass = Get-JavaClass -Name "Interface"
+    $JavaClass = Get-JavaClass -Name "Interfacing"
+    # Prefix file paths with expected scheme (if required)
+    if (($FileName -NotMatch '(riskpro\:\/\/).*') -And ($FileName -NotMatch '(file\:\/\/\/).*')) {
+      $FileName = [System.String]::Concat("file:///", $FileName)
+    }
+    # Encode URI
+    $FileURI = Resolve-URI -URI $FileName -RestrictedOnly
   }
   Process {
-    # # Variables
-    # $URI = Resolve-URI -URI $Path
-    # if ($Remote) {
-    #   $URI = "file:///$URI"
-    # } else {
-    #   # TODO add check if URI is not relative
-    #   $URI = "riskpro://$URI"
-    # }
-    # $ISOTime = Get-Date -Format "yyyy-MM-dd_HHmmss"
-    # # Set solve name
-    # if ($ForcedDataGroup -ne "") {
-    #   $SolveName = "Import_${ForcedDataGroup}_${ISOTime}"
-    # } else {
-    #   $SolveName = "Import_${Model}_${ISOTime}"
-    # }
   	# Define operation parameters
     $OperationParameters = New-Object -TypeName "System.Collections.Specialized.OrderedDictionary"
-    $OperationParameters.Add("ic.createNew", $NewModel)
-    $OperationParameters.Add("ic.modelName", $Model)
-    $OperationParameters.Add("ic.solveName", $SolveName)
-    $OperationParameters.Add("ic.fileName", $URI)
-    $OperationParameters.Add("ic.modelElements", $ModelElements)
-    $OperationParameters.Add("ic.observations", $Observations)
-    $OperationParameters.Add("ic.contracts", $Contracts)
-    $OperationParameters.Add("ic.counterparties", $Counterparties)
-    $OperationParameters.Add("ic.businessAudits", $BusinessAudits)
-    $OperationParameters.Add("ic.libraries", $Libraries)
-    $OperationParameters.Add("ic.logLevel", $LogLevel)
-    $OperationParameters.Add("ic.compileAllExpressions", $CompileExpressions)
-    $OperationParameters.Add("ic.forcedDataGroupName", $ForcedDataGroup)
-    $OperationParameters.Add("ws.sync", $SyncMode)
+    $OperationParameters.Add("ic.createNew"             , $NewModel)
+    $OperationParameters.Add("ic.modelName"             , $ModelName)
+    $OperationParameters.Add("ic.solveName"             , $SolveName)
+    $OperationParameters.Add("ic.fileName"              , $FileURI)
+    $OperationParameters.Add("ic.modelElements"         , $ModelElements)
+    $OperationParameters.Add("ic.observations"          , $Observations)
+    $OperationParameters.Add("ic.contracts"             , $Contracts)
+    $OperationParameters.Add("ic.counterparties"        , $Counterparties)
+    $OperationParameters.Add("ic.businessAudits"        , $BusinessAudits)
+    $OperationParameters.Add("ic.libraries"             , $Libraries)
+    $OperationParameters.Add("ic.logLevel"              , $LogLevel)
+    $OperationParameters.Add("ic.compileAllExpressions" , $CompileAllExpressions)
+    $OperationParameters.Add("ic.forcedDataGroupName"   , $ForcedDataGroupName)
+    $OperationParameters.Add("ws.sync"                  , $SynchronousMode)
     # Format Java parameters
     $Parameters = ConvertTo-JavaProperty -Properties $OperationParameters
     # Import XML file
