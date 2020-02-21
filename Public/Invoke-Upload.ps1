@@ -1,10 +1,10 @@
-function Get-ModelID {
+function Invoke-Upload {
   <#
     .SYNOPSIS
-    Get model ID
+    Publish file
 
     .DESCRIPTION
-    Wrapper function to retrieve the unique identifier of a model using the RiskPro batch client
+    Wrapper function to upload a file on the server using the RiskPro batch client
 
     .PARAMETER JavaPath
     The optional java path parameter corresponds to the path to the Java executable file. If not specified, please ensure that the path contains the Java home.
@@ -21,29 +21,29 @@ function Get-ModelID {
     .PARAMETER JavaOptions
     The optional Java options parameter corresponds to the additional Java options to pass to the Java client.
 
-    .PARAMETER ModelName
-    The model name parameter corresponds to the name of the model to check.
+    .PARAMETER FilePath
+    The file path parameter corresponds to the path to the file to upload.
+
+    .PARAMETER DestinationPath
+    The destination path parameter corresponds to the server-side destination path of the file.
 
     .NOTES
-    File name:      Get-ModelID.ps1
+    File name:      Invoke-Upload.ps1
     Author:         Florian CARRIER
-    Creation date:  23/10/2019
-    Last modified:  28/01/2020
-    TODO            Add parameter validation
-                    Parse output and retrieve model ID
-    WARNING         Synchronous mode not supported for operation 'getModelId'!
+    Creation date:  17/02/2020
+    Last modified:  17/02/2020
   #>
   [CmdletBinding (
     SupportsShouldProcess = $true
   )]
-  Param(
+  Param (
     [Parameter (
       Position    = 1,
       Mandatory   = $false,
       HelpMessage = "Java path"
     )]
     [ValidateNotNullOrEmpty ()]
-    [String]
+    [System.String]
     $JavaPath,
     [Parameter (
       Position    = 2,
@@ -52,7 +52,7 @@ function Get-ModelID {
     )]
     [ValidateNotNullOrEmpty ()]
     [Alias ("Path", "RiskProPath")]
-    [String]
+    [System.String]
     $RiskProBatchClient,
     [Parameter (
       Position    = 3,
@@ -60,7 +60,7 @@ function Get-ModelID {
       HelpMessage = "RiskPro server URI"
     )]
     [ValidateNotNullOrEmpty ()]
-    [String]
+    [System.String]
     $ServerURI,
     [Parameter (
       Position    = 4,
@@ -76,31 +76,49 @@ function Get-ModelID {
       HelpMessage = "Java options"
     )]
     [ValidateNotNullOrEmpty ()]
-    [String[]]
+    [System.String[]]
     $JavaOptions,
     [Parameter (
       Position    = 6,
       Mandatory   = $true,
-      HelpMessage = "Name of the model"
+      HelpMessage = "Path to the file"
     )]
     [ValidateNotNullOrEmpty ()]
-    [Alias ("Name")]
-    [String]
-    $ModelName
+    [System.String]
+    $FilePath,
+    [Parameter (
+      Position    = 7,
+      Mandatory   = $true,
+      HelpMessage = "Destination path of the file"
+    )]
+    [ValidateNotNullOrEmpty ()]
+    [System.String]
+    $DestinationPath
   )
   Begin {
     # Get global preference variables
     Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     # Get utilities Java class
-    $JavaClass = Get-JavaClass -Name "Utilities"
+    $JavaClass = Get-JavaClass -Name "FileSystem"
+    # Prefix file paths with expected scheme (if required)
+    if ($FilePath -NotMatch '(file\:\/\/\/).*') {
+      $FilePath = [System.String]::Concat("file:///", $FilePath)
+    }
+    if ($DestinationPath -NotMatch '(riskpro\:\/\/).*') {
+      $DestinationPath = [System.String]::Concat("riskpro://", $DestinationPath)
+    }
+    # Encode URIs
+    $FileURI        = Resolve-URI -URI $FilePath        -RestrictedOnly
+    $DestinationURI = Resolve-URI -URI $DestinationPath -RestrictedOnly
   }
   Process {
     # Define operation parameters
     $OperationParameters = New-Object -TypeName "System.Collections.Specialized.OrderedDictionary"
-    $OperationParameters.Add("ut.modelName", $ModelName)
+    $OperationParameters.Add("fs.sourceFile", $FileURI)
+    $OperationParameters.Add("fs.destFile"  , $DestinationURI)
     # Format Java parameters
     $Parameters = ConvertTo-JavaProperty -Properties $OperationParameters
-    # Query model ID
-  	Invoke-RiskProBatchClient -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Operation "getModelId" -Parameters $Parameters -Class $JavaClass
+    # Upload file
+  	Invoke-RiskProBatchClient -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Operation "upload" -Parameters $Parameters -Class $JavaClass
   }
 }

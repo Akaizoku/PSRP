@@ -21,17 +21,17 @@ function Start-Solve {
     .PARAMETER JavaOptions
     The optional Java options parameter corresponds to the additional Java options to pass to the Java client.
 
-    .PARAMETER Model
-    The model parameter corresponds to the name of the model.
+    .PARAMETER ModelName
+    The model name parameter corresponds to the name of the model.
 
-    .PARAMETER ResultSelection
+    .PARAMETER ResultSelectionName
     The result selection parameter corresponds to the name of the analysis to run.
 
     .PARAMETER AccountStructure
     The account structure parameter corresponds to the name of the financial institution.
 
-    .PARAMETER Solve
-    The solve parameter corresponds to the label of the process.
+    .PARAMETER SolveName
+    The solve name parameter corresponds to the label of the process.
 
     .PARAMETER AnalysisDate
     The optional analysis date parameter corresponds to the date of the analysis. It must be in the following format: dd/MM/YYYY AM/PM.
@@ -76,7 +76,7 @@ function Start-Solve {
     File name:      Start-Solve.ps1
     Author:         Florian CARRIER
     Creation date:  22/10/2019
-    Last modified:  21/01/2020
+    Last modified:  28/01/2020
     TODO            Add parameter validation
 
     .LINK
@@ -140,7 +140,7 @@ function Start-Solve {
     )]
     [ValidateNotNullOrEmpty ()]
     [String]
-    $Model,
+    $ModelName,
     [Parameter (
       Position    = 7,
       Mandatory   = $true,
@@ -164,7 +164,7 @@ function Start-Solve {
     )]
     [ValidateNotNullOrEmpty ()]
     [String]
-    $Solve,
+    $SolveName,
     [Parameter (
       Position    = 10,
       Mandatory   = $false,
@@ -268,14 +268,14 @@ function Start-Solve {
   Process {
     # Define operation parameters
     $OperationParameters = New-Object -TypeName "System.Collections.Specialized.OrderedDictionary"
-    $OperationParameters.Add("sv.modelName", $Model)
+    $OperationParameters.Add("sv.modelName", $ModelName)
     $OperationParameters.Add("sv.resultSelectionName", $ResultSelection)
     # Add accout structure (financial institution)
     if ($PSBoundParameters.ContainsKey("AccountStructure")) {
       $OperationParameters.Add("sv.accountStructureName", $AccountStructure)
     }
     # Add solve name
-    $OperationParameters.Add("sv.solveName", $Solve)
+    $OperationParameters.Add("sv.solveName", $SolveName)
     if ($PSBoundParameters.ContainsKey("AnalysisDate")) {
       $OperationParameters.Add("sv.analysisDate", $AnalysisDate)
     }

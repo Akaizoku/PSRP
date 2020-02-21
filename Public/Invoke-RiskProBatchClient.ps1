@@ -25,7 +25,7 @@ function Invoke-RiskProBatchClient {
     The operation parameter corresponds to the command to execute.
 
     .PARAMETER Parameters
-    The parameters parameter corresponds to the list of parameters to use for the operation.
+    The optional parameters parameter corresponds to the list of parameters to use for the operation.
 
     .PARAMETER Class
     The class parameter corresponds to the Java class to use for the operation.
@@ -34,7 +34,7 @@ function Invoke-RiskProBatchClient {
     File name:      Invoke-RiskProBatchClient.ps1
     Author:         Florian CARRIER
     Creation date:  27/11/2018
-    Last modified:  21/01/2020
+    Last modified:  24/01/2020
   #>
   [CmdletBinding (
     SupportsShouldProcess = $true
@@ -91,7 +91,7 @@ function Invoke-RiskProBatchClient {
     $Operation,
     [Parameter (
       Position    = 7,
-      Mandatory   = $true,
+      Mandatory   = $false,
       HelpMessage = "Parameters of the operation"
     )]
     [ValidateNotNullOrEmpty ()]
@@ -111,18 +111,34 @@ function Invoke-RiskProBatchClient {
     Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
   }
   Process {
-    # Build command
+    # Check parameters and build command
     if ($PSBoundParameters.ContainsKey("JavaPath") -And ($JavaPath -ne "") -And ($JavaPath -ne $null)) {
       if ($PSBoundParameters.ContainsKey("JavaOptions") -And ($JavaOptions -ne "") -And ($JavaOptions -ne $null)) {
-        $CommandLine = Write-RiskProBatchCmd -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Operation $Operation -Parameters $Parameters -Class $Class
+        if ($PSBoundParameters.ContainsKey("Parameters")) {
+          $CommandLine = Write-RiskProBatchClientCmd -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Operation $Operation -Parameters $Parameters -Class $Class
+        } else {
+          $CommandLine = Write-RiskProBatchClientCmd -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Operation $Operation -Class $Class
+        }
       } else {
-        $CommandLine = Write-RiskProBatchCmd -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -Operation $Operation -Parameters $Parameters -Class $Class
+        if ($PSBoundParameters.ContainsKey("Parameters")) {
+          $CommandLine = Write-RiskProBatchClientCmd -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -Operation $Operation -Parameters $Parameters -Class $Class
+        } else {
+          $CommandLine = Write-RiskProBatchClientCmd -JavaPath $JavaPath -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -Operation $Operation -Class $Class
+        }
       }
     } else {
       if ($PSBoundParameters.ContainsKey("JavaOptions") -And ($JavaOptions -ne "") -And ($JavaOptions -ne $null)) {
-        $CommandLine = Write-RiskProBatchCmd -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Operation $Operation -Parameters $Parameters -Class $Class
+        if ($PSBoundParameters.ContainsKey("Parameters")) {
+          $CommandLine = Write-RiskProBatchClientCmd -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Operation $Operation -Parameters $Parameters -Class $Class
+        } else {
+          $CommandLine = Write-RiskProBatchClientCmd -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -JavaOptions $JavaOptions -Operation $Operation -Class $Class
+        }
       } else {
-        $CommandLine = Write-RiskProBatchCmd -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -Operation $Operation -Parameters $Parameters -Class $Class
+        if ($PSBoundParameters.ContainsKey("Parameters")) {
+          $CommandLine = Write-RiskProBatchClientCmd -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -Operation $Operation -Parameters $Parameters -Class $Class
+        } else {
+          $CommandLine = Write-RiskProBatchClientCmd -RiskProPath $RiskProBatchClient -ServerURI $ServerURI -Credentials $Credentials -Operation $Operation -Class $Class
+        }
       }
     }
     # Execute command
