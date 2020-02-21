@@ -24,7 +24,7 @@ function Start-Solve {
     .PARAMETER ModelName
     The model name parameter corresponds to the name of the model.
 
-    .PARAMETER ResultSelection
+    .PARAMETER ResultSelectionName
     The result selection parameter corresponds to the name of the analysis to run.
 
     .PARAMETER AccountStructure
