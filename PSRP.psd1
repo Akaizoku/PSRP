@@ -12,7 +12,7 @@
 RootModule = 'PSRP.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.0'
+ModuleVersion = '1.0.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -69,7 +69,42 @@ PowerShellVersion = '3.0'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = '*'
+FunctionsToExport = @(
+  "Backup-Schema",
+  "Get-ModelID",
+  "Get-RiskProBatchResult",
+  "Get-SolveID",
+  "Grant-Role",
+  "Invoke-CreateModel",
+  "Invoke-CreateModelGroup",
+  "Invoke-CreateUser",
+  "Invoke-CreateUserGroup",
+  "Invoke-DeleteModel",
+  "Invoke-DeleteModelGroup",
+  "Invoke-DeleteUser",
+  "Invoke-List",
+  "Invoke-MakeDir",
+  "Invoke-MigratorTool",
+  "Invoke-ModifyModel",
+  "Invoke-ModifyModelGroup",
+  "Invoke-ModifyUser",
+  "Invoke-RiskProANTClient",
+  "Invoke-RiskProBatchClient",
+  "Invoke-Upload",
+  "Restore-Schema",
+  "Set-UserPassword",
+  "Start-CleanRollupSolve",
+  "Start-ExportToExcel",
+  "Start-ImportXML",
+  "Start-Maintenance",
+  "Start-RollupSolve",
+  "Start-Solve",
+  "Test-MigratorToolOutcome",
+  "Test-Model",
+  "Test-RiskProBatchClientOutcome",
+  "Test-Solve",
+  "Unlock-User"
+)
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -108,8 +143,8 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
-[1.0.0]
-Framework for basic administration functions.
+[1.0.1]
+Add contract selection function and change log
 '@
 
     } # End of PSData hashtable
