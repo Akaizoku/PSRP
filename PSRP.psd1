@@ -12,7 +12,7 @@
 RootModule = 'PSRP.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.1'
+ModuleVersion = '1.0.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -95,6 +95,7 @@ FunctionsToExport = @(
   "Set-UserPassword",
   "Start-CleanRollupSolve",
   "Start-ExportToExcel",
+  "Start-GenesisLoader",
   "Start-ImportXML",
   "Start-Maintenance",
   "Start-RollupSolve",
@@ -143,8 +144,8 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
-[1.0.1]
-Add contract selection function and change log
+[1.0.2]
+Add data foundation loader function
 '@
 
     } # End of PSData hashtable
