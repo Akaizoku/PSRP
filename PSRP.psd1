@@ -95,6 +95,7 @@ FunctionsToExport = @(
   "Set-UserPassword",
   "Start-CleanRollupSolve",
   "Start-ExportToExcel",
+  "Start-GenerateUDAJAR",
   "Start-GenesisLoader",
   "Start-ImportXML",
   "Start-Maintenance",
@@ -146,6 +147,7 @@ PrivateData = @{
         ReleaseNotes = @'
 [1.0.2]
 Add data foundation loader function
+Add generate JAR function
 '@
 
     } # End of PSData hashtable
