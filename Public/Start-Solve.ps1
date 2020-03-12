@@ -76,7 +76,7 @@ function Start-Solve {
     File name:      Start-Solve.ps1
     Author:         Florian CARRIER
     Creation date:  22/10/2019
-    Last modified:  28/01/2020
+    Last modified:  12/03/2020
     TODO            Add parameter validation
 
     .LINK
@@ -195,7 +195,7 @@ function Start-Solve {
       Mandatory   = $false,
       HelpMessage = "The separator character in lists of values"
     )]
-    [ValidateNotNullOrEmpty ()]
+    # [ValidateNotNullOrEmpty ()]
     [String]
     $Separator,
     [Parameter (
