@@ -16,7 +16,7 @@ RiskPro PowerShell module (PSRP) is a framework for the automation of tasks for 
 
 ### Installation
 
-There are two ways of setting up the WildFly PowerShell Module on your system:
+There are two ways of setting up the RiskPro PowerShell Module on your system:
 
 1.  Download the `PSRP` module from the [Github repository](https://github.com/Akaizoku/PSRP);
 2.  Install the `PSRP` module from the [PowerShell Gallery](https://www.powershellgallery.com/packages/PSRP).
